@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Watch Club — Private Movie Night</title>
+<meta name="theme-color" content="#101010">
+<style>
+:root{--bg:#101010;--panel:#1c1c1c;--panel2:#292929;--text:#f5f5f5;--muted:#b3b3b3;--red:#e50914;--line:#383838;--green:#42d392}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+header{min-height:70px;display:flex;align-items:center;gap:20px;padding:14px 5%;background:#101010;border-bottom:1px solid #252525;position:sticky;top:0;z-index:5}
+.brand{font-size:1.55rem;font-weight:900;color:var(--red);letter-spacing:-.05em;white-space:nowrap}.brand span{color:#fff}
+.header-note{color:var(--muted);font-size:.88rem}.header-right{margin-left:auto;display:flex;gap:10px;align-items:center}
+button,input,select,textarea{font:inherit}button{border:0;cursor:pointer;font-weight:700;border-radius:5px;padding:10px 14px;background:var(--red);color:#fff}button:hover{filter:brightness(1.12)}button:disabled{opacity:.55;cursor:wait}button.secondary{background:#333;color:#fff}button.danger{background:#482126;color:#ffc3c8}
+main{max-width:1400px;margin:auto;padding:0 5% 60px}
+.hero{margin:24px 0 28px;min-height:260px;border-radius:12px;overflow:hidden;display:flex;align-items:end;padding:30px;background:linear-gradient(90deg,#000e 0%,#0009 48%,#0003 100%),radial-gradient(ellipse at 78% 25%,#a20b26 0%,transparent 34%),linear-gradient(135deg,#3a111b,#151515 55%,#263447)}
+.hero-content{max-width:650px}.eyebrow{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:#ff777d;font-weight:800}.hero h1{font-size:clamp(2rem,5vw,3.7rem);margin:9px 0;line-height:1;letter-spacing:-.04em}.hero p{color:#ddd;max-width:540px;line-height:1.55}.hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.notice{padding:12px 14px;border:1px solid #454545;background:#1b1b1b;border-radius:8px;color:#ddd;margin:16px 0;font-size:.9rem}.notice.error{border-color:#81323a;color:#ffc3c8}.notice.success{border-color:#246e50;color:#baf3d7}
+.auth-wrap{max-width:480px;margin:55px auto;background:var(--panel);padding:26px;border-radius:12px;border:1px solid var(--line)}.auth-wrap h1{margin-top:0}.auth-wrap p{color:var(--muted);line-height:1.5}
+.field{margin:14px 0}.field label{display:block;color:#ccc;font-size:.85rem;margin-bottom:7px}
+input,select,textarea{background:#252525;color:white;border:1px solid #484848;border-radius:5px;padding:11px 12px;width:100%;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#e50914}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.toolbar input{flex:1;min-width:190px}.toolbar select{width:auto;min-width:145px}
+.section-title{font-size:1.25rem;margin:28px 0 14px}.shelf{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+.movie{background:var(--panel);border-radius:8px;overflow:hidden;border:1px solid #292929;min-width:0;transition:transform .16s,border-color .16s}.movie:hover{transform:translateY(-3px);border-color:#666}
+.poster{aspect-ratio:2/3;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;background:linear-gradient(145deg,#373737,#171717);position:relative;overflow:hidden}.poster img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}.poster-fallback{font-size:1.2rem;font-weight:900;text-shadow:0 2px 8px #000;z-index:1;overflow-wrap:anywhere}.year{position:absolute;bottom:9px;left:10px;background:#000b;padding:4px 7px;border-radius:4px;font-size:.75rem;z-index:2}
+.movie-info{padding:12px}.movie-title{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.meta{font-size:.8rem;color:var(--muted);margin-top:5px;line-height:1.4}.movie-actions{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap}.movie-actions button{padding:7px 9px;font-size:.76rem;flex:1}.empty{padding:34px 15px;border:1px dashed #444;border-radius:10px;text-align:center;color:var(--muted);grid-column:1/-1}
+.overlay{position:fixed;inset:0;background:#000c;z-index:20;display:none;align-items:center;justify-content:center;padding:16px}.overlay.open{display:flex}.modal{width:min(640px,100%);max-height:90vh;overflow:auto;background:#181818;border:1px solid #414141;border-radius:12px;padding:22px}.modal h2{margin:0 0 18px}.close-row{display:flex;justify-content:space-between;align-items:center}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.formgrid .wide{grid-column:1/-1}.hint{font-size:.82rem;color:var(--muted);line-height:1.5}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}
+.hidden{display:none!important}footer{border-top:1px solid #333;margin-top:45px;padding-top:18px;color:#777;font-size:.8rem;line-height:1.5}
+@media(max-width:1000px){.shelf{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(max-width:720px){header{padding:12px 4%;gap:10px}.brand{font-size:1.25rem}.header-note{display:none}main{padding:0 4% 45px}.hero{min-height:230px;padding:22px}.shelf{grid-template-columns:repeat(2,minmax(0,1fr))}.formgrid{grid-template-columns:1fr}.formgrid .wide{grid-column:auto}.header-right button{padding:8px 10px;font-size:.82rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">WATCH<span> CLUB</span></div>
+  <div class="header-note">A private movie library for your crew</div>
+  <div class="header-right">
+    <span id="userLabel" class="header-note"></span>
+    <button id="logoutBtn" class="secondary hidden" type="button">Sign out</button>
+  </div>
+</header>
+
+<section id="authSection" class="auth-wrap">
+  <div class="eyebrow">Invite-only watchlist</div>
+  <h1>Movie night starts here.</h1>
+  <p>Sign in with the account the Watch Club owner created for you. There is no public sign-up on this page.</p>
+  <div id="authMessage" class="notice hidden" role="status"></div>
+  <form id="loginForm">
+    <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="username" required placeholder="you@example.com"></div>
+    <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required placeholder="Your password"></div>
+    <button id="loginBtn" type="submit" style="width:100%">Sign in</button>
+  </form>
+  <p class="hint">Ask the owner to create your account in the Supabase dashboard. If email confirmation is enabled, follow the confirmation email first.</p>
+</section>
+
+<main id="appSection" class="hidden">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="eyebrow">Just your crew • Shared collection</div>
+      <h1>What are we watching?</h1>
+      <p>Add movies and shows, share trailers or legal streaming links, and keep your group's next movie night in one place.</p>
+      <div class="hero-actions"><button id="addOpen" type="button">＋ Add a title</button><button id="refreshBtn" class="secondary" type="button">↻ Refresh</button></div>
+    </div>
+  </section>
+  <div id="appMessage" class="notice hidden" role="status"></div>
+  <div class="toolbar">
+    <input id="search" placeholder="Search titles, genres, or friends…" aria-label="Search titles">
+    <select id="typeFilter" aria-label="Filter by type"><option value="All">Movies & shows</option><option>Movie</option><option>Show</option></select>
+    <select id="genreFilter" aria-label="Filter by genre"><option value="All">All genres</option></select>
+    <select id="sort" aria-label="Sort titles"><option value="new">Recently added</option><option value="title">Title A–Z</option><option value="year">Release year</option></select>
+  </div>
+  <h2 class="section-title" id="shelfTitle">🎬 Your crew's collection</h2>
+  <section class="shelf" id="shelf"></section>
+  <footer>Watch Club is a fan-made watchlist, not affiliated with Netflix. It stores movie information and links, not movie files. Only signed-in accounts can access the collection when Supabase is configured with the included security policies.</footer>
+</main>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="close-row"><h2 id="modalTitle">Add a title</h2><button class="secondary" id="closeModal" type="button" aria-label="Close">✕</button></div>
+    <form id="movieForm">
+      <div class="formgrid">
+        <div class="field"><label for="title">Title *</label><input id="title" required maxlength="100" placeholder="Movie or show name"></div>
+        <div class="field"><label for="type">Type</label><select id="type"><option>Movie</option><option>Show</option></select></div>
+        <div class="field"><label for="year">Release year</label><input id="year" type="number" min="1888" max="2100" placeholder="2026"></div>
+        <div class="field"><label for="genre">Genre</label><input id="genre" maxlength="40" placeholder="Horror, comedy, sci-fi…"></div>
+        <div class="field"><label for="addedBy">Suggested by</label><input id="addedBy" maxlength="50" placeholder="Your name"></div>
+        <div class="field"><label for="poster">Poster image URL</label><input id="poster" type="url" placeholder="https://…"></div>
+        <div class="field wide"><label for="watchUrl">Where to watch / trailer URL</label><input id="watchUrl" type="url" placeholder="https://…"></div>
+        <div class="field wide"><label for="description">Description (optional)</label><textarea id="description" rows="3" maxlength="350" placeholder="What's it about?"></textarea></div>
+      </div>
+      <p class="hint">Use a direct poster image URL. Only add legal streaming links or official trailers; this site doesn't host movie/video files.</p>
+      <div class="modal-actions"><button class="secondary" id="cancelModal" type="button">Cancel</button><button id="saveTitle" type="submit">Add to collection</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- Supabase's browser client. Configure SUPABASE_URL and SUPABASE_ANON_KEY below before deployment. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/*
+  SETUP: Replace both placeholder values with your project's Project URL and anon/publishable key.
+  These browser-safe values are not passwords. Never put a service_role/secret key in this file.
+*/
+const SUPABASE_URL = "https://vnacfjrvahhvdbjjwmsn.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_BELhrAuTbUc2TZ1AkVCMdg_aGvbm0ez";
+const configured = SUPABASE_URL.startsWith("https://") &&
+  !SUPABASE_URL.includes("PASTE_") && !SUPABASE_ANON_KEY.includes("PASTE_");
+const supabaseClient = configured && window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+let movies = [];
+let editingId = null;
+let currentUser = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function message(target, text, kind="") {
+  const el=$(target); el.textContent=text; el.className="notice"+(kind?" "+kind:"");
+  el.classList.remove("hidden");
+}
+function hideMessage(target){$(target).classList.add("hidden");}
+function validHttpUrl(value) {
+  if(!value) return true;
+  try { const u=new URL(value); return u.protocol==="https:"||u.protocol==="http:"; } catch { return false; }
+}
+async function showApp(user) {
+  currentUser=user;
+  $("authSection").classList.add("hidden");$("appSection").classList.remove("hidden");
+  $("logoutBtn").classList.remove("hidden");$("userLabel").textContent=user.email||"Signed in";
+  await loadMovies();
+}
+function showLogin() {
+  currentUser=null;movies=[];
+  $("appSection").classList.add("hidden");$("authSection").classList.remove("hidden");
+  $("logoutBtn").classList.add("hidden");$("userLabel").textContent="";
+}
+async function loadMovies() {
+  if(!supabaseClient){message("appMessage","Supabase isn't configured yet. Follow SETUP.md, then add your project URL and anon/publishable key to index.html.","error");return;}
+  hideMessage("appMessage");
+  $("shelf").innerHTML='<div class="empty">Loading your shared collection…</div>';
+  const {data,error}=await supabaseClient.from("movies").select("*").order("created_at",{ascending:false});
+  if(error){message("appMessage","Could not load the collection: "+error.message,"error");$("shelf").innerHTML="";return;}
+  movies=data||[];render();
+}
+async function signIn(e) {
+  e.preventDefault();
+  if(!supabaseClient){message("authMessage","The site owner needs to configure Supabase first. See SETUP.md.","error");return;}
+  const btn=$("loginBtn");btn.disabled=true;btn.textContent="Signing in…";hideMessage("authMessage");
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
+  btn.disabled=false;btn.textContent="Sign in";
+  if(error){message("authMessage","Sign-in failed. Check your email/password, and ask the owner to confirm your account exists.","error");return;}
+  await showApp(data.user);
+}
+$("loginForm").addEventListener("submit",signIn);
+$("logoutBtn").addEventListener("click",async()=>{if(supabaseClient)await supabaseClient.auth.signOut();showLogin();});
+$("refreshBtn").addEventListener("click",loadMovies);
+function openModal(id=null){
+  editingId=id;$("movieForm").reset();
+  const m=id?movies.find(x=>x.id===id):null;
+  $("modalTitle").textContent=m?"Edit title":"Add a title";$("saveTitle").textContent=m?"Save changes":"Add to collection";
+  if(m){$("title").value=m.title;$("type").value=m.type;$("year").value=m.year||"";$("genre").value=m.genre||"";$("addedBy").value=m.added_by||"";$("poster").value=m.poster_url||"";$("watchUrl").value=m.watch_url||"";$("description").value=m.description||"";}
+  $("overlay").classList.add("open");$("title").focus();
+}
+function closeModal(){$("overlay").classList.remove("open");editingId=null;}
+$("addOpen").addEventListener("click",()=>openModal());
+$("closeModal").addEventListener("click",closeModal);$("cancelModal").addEventListener("click",closeModal);
+$("overlay").addEventListener("click",e=>{if(e.target===$("overlay"))closeModal();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+$("movieForm").addEventListener("submit",async e=>{
+  e.preventDefault();if(!supabaseClient||!currentUser)return;
+  const item={title:$("title").value.trim(),type:$("type").value,year:$("year").value?Number($("year").value):null,genre:$("genre").value.trim()||null,added_by:$("addedBy").value.trim()||null,poster_url:$("poster").value.trim()||null,watch_url:$("watchUrl").value.trim()||null,description:$("description").value.trim()||null};
+  if(!item.title)return;
+  if(!validHttpUrl(item.poster_url)||!validHttpUrl(item.watch_url)){message("appMessage","Poster and watch links must start with http:// or https://.","error");return;}
+  const btn=$("saveTitle");btn.disabled=true;btn.textContent="Saving…";
+  let result;
+  if(editingId) result=await supabaseClient.from("movies").update(item).eq("id",editingId).select().single();
+  else result=await supabaseClient.from("movies").insert({...item,created_by:currentUser.id}).select().single();
+  btn.disabled=false;btn.textContent=editingId?"Save changes":"Add to collection";
+  if(result.error){message("appMessage","Couldn't save this title: "+result.error.message,"error");return;}
+  closeModal();await loadMovies();message("appMessage",editingId?"Title updated.":"Title added to the shared collection.","success");
+});
+async function deleteMovie(id){
+  const m=movies.find(x=>x.id===id);if(!m||!confirm(`Remove "${m.title}" from the shared collection for everyone?`))return;
+  const {error}=await supabaseClient.from("movies").delete().eq("id",id);
+  if(error){message("appMessage","Couldn't remove this title: "+error.message,"error");return;}
+  await loadMovies();message("appMessage","Title removed from the shared collection.","success");
+}
+function render(){
+  const q=$("search").value.toLowerCase().trim(),type=$("typeFilter").value,genre=$("genreFilter").value,sort=$("sort").value;
+  const genres=[...new Set(movies.map(m=>m.genre).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const previous=genre;
+  $("genreFilter").innerHTML='<option value="All">All genres</option>'+genres.map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join("");
+  $("genreFilter").value=genres.includes(previous)?previous:"All";
+  let view=movies.filter(m=>(type==="All"||m.type===type)&&($("genreFilter").value==="All"||m.genre===$("genreFilter").value)&&`${m.title} ${m.genre||""} ${m.added_by||""} ${m.description||""}`.toLowerCase().includes(q));
+  if(sort==="title")view.sort((a,b)=>a.title.localeCompare(b.title));
+  if(sort==="year")view.sort((a,b)=>(Number(b.year)||0)-(Number(a.year)||0));
+  if(sort==="new")view.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+  $("shelfTitle").textContent=`🎬 ${q||type!=="All"||genre!=="All"?"Search results":"Your crew's collection"} (${view.length})`;
+  $("shelf").innerHTML=view.length?view.map(m=>`<article class="movie">
+    <div class="poster">${m.poster_url?`<img src="${esc(m.poster_url)}" alt="${esc(m.title)} poster" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:""}<div class="poster-fallback">${esc(m.title)}</div>${m.year?`<span class="year">${esc(m.year)}</span>`:""}</div>
+    <div class="movie-info"><div class="movie-title" title="${esc(m.title)}">${esc(m.title)}</div><div class="meta">${esc(m.type)}${m.genre?" · "+esc(m.genre):""}</div>${m.added_by?`<div class="meta">Suggested by ${esc(m.added_by)}</div>`:""}${m.description?`<p class="meta">${esc(m.description)}</p>`:""}
+    <div class="movie-actions">${m.watch_url?`<button class="secondary" data-open="${esc(m.id)}">Open link ↗</button>`:""}<button class="secondary" data-edit="${esc(m.id)}">Edit</button><button class="danger" data-delete="${esc(m.id)}">Remove</button></div></div>
+  </article>`).join(""):'<div class="empty">No titles yet. Add the first movie and start your collection.</div>';
+  $("shelf").querySelectorAll("[data-open]").forEach(btn=>btn.addEventListener("click",()=>{const m=movies.find(x=>x.id===btn.dataset.open);if(m&&validHttpUrl(m.watch_url)&&m.watch_url)window.open(m.watch_url,"_blank","noopener,noreferrer");}));
+  $("shelf").querySelectorAll("[data-edit]").forEach(btn=>btn.addEventListener("click",()=>openModal(btn.dataset.edit)));
+  $("shelf").querySelectorAll("[data-delete]").forEach(btn=>btn.addEventListener("click",()=>deleteMovie(btn.dataset.delete)));
+}
+$("search").addEventListener("input",render);$("typeFilter").addEventListener("change",render);$("genreFilter").addEventListener("change",render);$("sort").addEventListener("change",render);
+(async function init(){
+  if(!configured){message("authMessage","Setup needed: open SETUP.md and configure a free Supabase project before signing in.","error");return;}
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  if(session)await showApp(session.user);
+  supabaseClient.auth.onAuthStateChange((_event,session)=>{if(!session)showLogin();});
+})();
+</script>
+</body>
+</html>
